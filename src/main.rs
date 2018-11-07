@@ -109,8 +109,8 @@ fn main() {
         },
     };
 
-    let distance = distance_set.fuzzify_input(7.6);
-    let delta = delta_set.fuzzify_input(2.6);
+    let distance = distance_set.fuzzify_input(3.7);
+    let delta = delta_set.fuzzify_input(1.2);
 
     let rule_matches = vec!(
         distance.is("Small").and(delta.is("Growing")).then(&action_set, "None"),
@@ -130,7 +130,7 @@ fn main() {
     println!("\napplicable sets");
     println!("{:?}", distance.items);
     println!("{:?}\n", delta.items);
-    println!("actions that matched (name, and original fuzzified input, not the aggregated value): ");
+    println!("actions that matched: ");
     cleaned_matches.iter().for_each(|f| println!("{:?}", f.items));
     println!("\nperfom-ing/ed aggregation");
     let aggregated_action_sets = action_set.aggregate(cleaned_matches);
