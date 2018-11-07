@@ -136,7 +136,11 @@ fn main() {
     let aggregated_action_sets = action_set.aggregate(cleaned_matches);
     let cog = aggregated_action_sets.cog(0.5);
     println!("Center of gravitiy: {} ", cog);
-    println!("action to take: {}", action_set.final_selection(cog))
+
+    match action_set.final_selection(cog) {
+        Some(t) => println!("action to take: {}", t.0),
+        None => println!("Could not determine action")
+    }
 }
 
 

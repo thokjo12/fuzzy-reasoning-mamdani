@@ -276,14 +276,11 @@ impl FuzzySets {
         return top / bot;
     }
 
-    pub fn final_selection(&self, cog: f64) -> String {
+    pub fn final_selection(&self, cog: f64) -> Option<(String,f64)> {
         let items = self.fuzzify_input(cog).items;
-        let option = items.iter()
-            .max_by(|first_tuple,second_tuple| first_tuple.1.partial_cmp(&second_tuple.1).unwrap_or(Ordering::Equal));
-        match option {
-            Some(t) => t.0.clone(),
-            None => String::from("Undefined")
-        }
+        let option = items.into_iter()
+            .max_by(|first_tuple,second_tuple| first_tuple.1.partial_cmp(&second_tuple.1).unwrap_or(Ordering::Equal).clone());
+        return option;
     }
 }
 
