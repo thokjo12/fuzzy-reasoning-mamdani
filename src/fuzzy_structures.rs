@@ -83,6 +83,12 @@ impl FuzzySetResult {
     }
 }
 
+impl Clone for FuzzySetResult {
+    fn clone(&self) -> FuzzySetResult {
+        FuzzySetResult { items: self.items.to_vec() }
+    }
+}
+
 impl Triangle {
     pub fn fuzzify(&self, position: f64) -> f64 {
         let mut value: f64 = 0.0;
@@ -95,6 +101,18 @@ impl Triangle {
             value = self.clip;
         }
         return value;
+    }
+}
+
+impl Clone for Triangle {
+    fn clone(&self) -> Triangle {
+        Triangle {
+            name: self.name.clone(),
+            x0: self.x0.clone(),
+            x1: self.x1.clone(),
+            x2: self.x2.clone(),
+            clip: self.clip.clone(),
+        }
     }
 }
 
@@ -115,6 +133,17 @@ impl Grade {
     }
 }
 
+impl Clone for Grade {
+    fn clone(&self) -> Grade {
+        Grade {
+            name: self.name.clone(),
+            x0: self.x0.clone(),
+            x1: self.x1.clone(),
+            clip: self.clip.clone(),
+        }
+    }
+}
+
 impl InverseGrade {
     pub fn fuzzify(&self, position: f64) -> f64 {
         let mut value: f64 = 0.0;
@@ -132,6 +161,17 @@ impl InverseGrade {
     }
 }
 
+impl Clone for InverseGrade {
+    fn clone(&self) -> InverseGrade {
+        InverseGrade {
+            name: self.name.clone(),
+            x0: self.x0.clone(),
+            x1: self.x1.clone(),
+            clip: self.clip.clone(),
+        }
+    }
+}
+
 impl FuzzySets {
     pub fn contains(&self, set: &str) -> bool {
         let mut contains = false;
@@ -144,6 +184,7 @@ impl FuzzySets {
         }
         return contains;
     }
+
     pub fn fuzzify_input(&self, input: f64) -> FuzzySetResult {
         let mut result = FuzzySetResult {
             items: Vec::new(),
@@ -164,6 +205,33 @@ impl FuzzySets {
             result.items.push((self.end.name.clone(), end))
         }
         return result;
+    }
+
+    pub fn aggregate(&self, matches: Vec<FuzzySetResult>) -> FuzzySets {
+        let mut agr_target = self.clone();
+        agr_target.end.clip = 0.0;
+        agr_target.start.clip = 0.0;
+        for triangle in &mut agr_target.triangles {
+            triangle.clip = 0.0;
+        }
+        for m in matches {
+            if m.items.len() != 0 {
+                for item in m.items {
+                    if agr_target.start.name == item.0 {
+                        agr_target.start.clip = item.1;
+                    }
+                    if agr_target.end.name == item.0 {
+                        agr_target.end.clip = item.1
+                    }
+                    for triangle in &mut agr_target.triangles {
+                        if triangle.name == item.0 {
+                            triangle.clip = item.1;
+                        }
+                    }
+                }
+            }
+        }
+        return agr_target;
     }
 
     pub fn cog(&self, increment: f64) -> f64 {
@@ -204,5 +272,23 @@ impl FuzzySets {
             }
         }
         return top / bot;
+    }
+
+    pub fn final_selection(&self, cog: f64) -> String {
+        let a = self.fuzzify_input(cog);
+        if a.items.len()== 1 {
+            return a.items[0].0.clone();
+        }
+        return String::from("");
+    }
+}
+
+impl Clone for FuzzySets {
+    fn clone(&self) -> FuzzySets {
+        return FuzzySets {
+            start: self.start.clone(),
+            triangles: self.triangles.to_vec(),
+            end: self.end.clone(),
+        };
     }
 }
