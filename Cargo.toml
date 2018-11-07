@@ -1,0 +1,6 @@
+[package]
+name = "fuzzy-reasoning"
+version = "0.1.0"
+authors = ["thokjo12 <thokjo12@hotmail.com>"]
+
+[dependencies]
