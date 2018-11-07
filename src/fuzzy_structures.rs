@@ -1,3 +1,5 @@
+use std::cmp::Ordering;
+
 pub struct FuzzySetResult {
     pub items: Vec<(String, f64)>
 }
@@ -276,10 +278,12 @@ impl FuzzySets {
 
     pub fn final_selection(&self, cog: f64) -> String {
         let items = self.fuzzify_input(cog).items;
-        let tuple = items.iter()
-            .max_by(|first_tuple,second_tuple| first_tuple.1.partial_cmp(&second_tuple.1).unwrap())
-            .unwrap();
-        return String::from(tuple.0.clone());
+        let option = items.iter()
+            .max_by(|first_tuple,second_tuple| first_tuple.1.partial_cmp(&second_tuple.1).unwrap_or(Ordering::Equal));
+        match option {
+            Some(t) => t.0.clone(),
+            None => String::from("Undefined")
+        }
     }
 }
 

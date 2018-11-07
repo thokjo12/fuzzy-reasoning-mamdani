@@ -33,7 +33,7 @@ fn main() {
             name: String::from("VeryBig"),
             x0: 7.5,
             x1: 9.0,
-            clip: 0.0,
+            clip: 1.0,
         },
     };
     let delta_set = FuzzySets {
@@ -109,8 +109,8 @@ fn main() {
         },
     };
 
-    let distance = distance_set.fuzzify_input(3.7);
-    let delta = delta_set.fuzzify_input(1.2);
+    let distance = distance_set.fuzzify_input(7.6);
+    let delta = delta_set.fuzzify_input(2.6);
 
     let rule_matches = vec!(
         distance.is("Small").and(delta.is("Growing")).then(&action_set, "None"),
