@@ -275,11 +275,11 @@ impl FuzzySets {
     }
 
     pub fn final_selection(&self, cog: f64) -> String {
-        let a = self.fuzzify_input(cog);
-        if a.items.len()== 1 {
-            return a.items[0].0.clone();
-        }
-        return String::from("");
+        let items = self.fuzzify_input(cog).items;
+        let tuple = items.iter()
+            .max_by(|first_tuple,second_tuple| first_tuple.1.partial_cmp(&second_tuple.1).unwrap())
+            .unwrap();
+        return String::from(tuple.0.clone());
     }
 }
 

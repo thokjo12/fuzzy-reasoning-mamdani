@@ -117,12 +117,11 @@ fn main() {
         distance.is("Small").and(delta.is("Stable")).then(&action_set, "SlowDown"),
         distance.is("Perfect").and(delta.is("Growing")).then(&action_set, "SpeedUp"),
         distance.is("VeryBig").and(delta.is("Growing").not().or(delta.is("GrowingFast").not())).then(&action_set, "FloorIt"),
-        distance.is("VerySmall").and(delta.is("Growing")).then(&action_set, "SlowDown"),
         distance.is("VerySmall").then(&action_set, "BrakeHard"),
     );
 
-    let mut cleaned_matches:Vec<FuzzySetResult> = Vec::new();
-    for item in &rule_matches{
+    let mut cleaned_matches: Vec<FuzzySetResult> = Vec::new();
+    for item in &rule_matches {
         if item.items.len() != 0 {
             cleaned_matches.push(item.clone())
         }
@@ -131,13 +130,13 @@ fn main() {
     println!("\napplicable sets");
     println!("{:?}", distance.items);
     println!("{:?}\n", delta.items);
-    println!("rules that matched:");
-    cleaned_matches.iter().for_each(|f | println!("{:?}",f.items));
+    println!("actions that matched (name, and original fuzzified input, not the aggregated value): ");
+    cleaned_matches.iter().for_each(|f| println!("{:?}", f.items));
     println!("\nperfom-ing/ed aggregation");
     let aggregated_action_sets = action_set.aggregate(cleaned_matches);
     let cog = aggregated_action_sets.cog(0.5);
-    println!("Center of gravitiy: {} ",cog);
-    println!("action to take: {}",action_set.final_selection(cog))
+    println!("Center of gravitiy: {} ", cog);
+    println!("action to take: {}", action_set.final_selection(cog))
 }
 
 
